@@ -1,0 +1,59 @@
+
+Issues with the current FRCSIM installation script.
+Mainly permission errors.
+
+The current script creates folders under the users home directory (/home/robot) which are owned by root and cannot be accessed by the script (even with sudo). There is a similar error when the models are unzipped under the /tmp folder. The file permissions prevent a move.  In addition, the model.zip file expands out to "frcsim-gazebo-models-4" and not "frcsim-gazebo-models" as expected in the script.
+
+Below are the corrective actions.  
+
+Dave Frederick
+
+=====================================
+## Change 1
+## - Change the ownership of all of the files under the user "robot" home directory to robot with group robot
+    chown -R robot:robot /home/robot/*
+
+## Change 2
+## - Make all of the files under the /tmp folder readable and deletable by robot.  
+    chmod -R /tmp/* 777
+
+  unzip /tmp/models.zip -d /tmp
+
+    cd ~
+    chown -R robot:robot /home/robot/*
+    chmod -R /tmp/* 777
+
+  mv /tmp/frcsim-gazebo-models-4/models ~/wpilib/simulation/models
+  mv /tmp/frcsim-gazebo-models-4/worlds ~/wpilib/simulation/worlds
+
+=============
+
+  install-eclipse-plugins
+  install-gz_msgs
+  install-eclipse
+  install-desktops
+  install-models
+  change-ownership
+
+## Change 3
+## - Change the ownership of all of the files under the user "robot" home directory to robot with group robot
+
+  chown -R robot:robot /home/robot/*
+
+## Change 4
+## - Create copies of the plugins so the match the expected values.  
+
+cp /home/robot/wpilib/simulation/plugins/libclock.so            /home/robot/wpilib/simulation/plugins/libgz_clock.so
+cp /home/robot/wpilib/simulation/plugins/libdc_motor.so         /home/robot/wpilib/simulation/plugins/libgz_dc_motor.so
+cp /home/robot/wpilib/simulation/plugins/libencoder.so          /home/robot/wpilib/simulation/plugins/libgz_encoder.so
+cp /home/robot/wpilib/simulation/plugins/libgyro.so             /home/robot/wpilib/simulation/plugins/libgz_gyro.so
+cp /home/robot/wpilib/simulation/plugins/liblimit_switch.so     /home/robot/wpilib/simulation/plugins/libgz_limit_switch.so
+cp /home/robot/wpilib/simulation/plugins/libpneumatic_piston.so /home/robot/wpilib/simulation/plugins/libgz_pneumatic_piston.so
+cp /home/robot/wpilib/simulation/plugins/libpotentiometer.so    /home/robot/wpilib/simulation/plugins/libgz_potentiometer.so
+cp /home/robot/wpilib/simulation/plugins/librangefinder.so      /home/robot/wpilib/simulation/plugins/libgz_rangefinder.so
+cp /home/robot/wpilib/simulation/plugins/libservo.so            /home/robot/wpilib/simulation/plugins/libgz_servo.so
+
+
+
+
+
